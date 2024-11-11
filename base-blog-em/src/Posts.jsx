@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 import { fetchPosts, deletePost, updatePost } from './api';
 import { PostDetail } from './PostDetail';
@@ -11,6 +11,12 @@ export function Posts() {
 
   const queryClient = useQueryClient();
 
+  const deleteMutation = useMutation({
+    mutationFn: (postId) => deletePost(postId),
+  });
+
+  // deleteMutation.delete
+
   useEffect(() => {
     if (currentPage < maxPostPage) {
       const nextPage = currentPage + 1;
@@ -21,14 +27,14 @@ export function Posts() {
     }
   }, [currentPage, queryClient]);
 
-  const { data, isError, error, isFetching } = useQuery({
+  const { data, isError, error, isLoading } = useQuery({
     queryKey: ['posts', currentPage],
     queryFn: () => fetchPosts(currentPage),
     staleTime: 2000,
   });
 
-  if (isFetching) {
-    return <h3>Fetching posts...</h3>;
+  if (isLoading) {
+    return <h3>Loading...</h3>;
   }
 
   if (isError) {
@@ -73,7 +79,9 @@ export function Posts() {
         </button>
       </div>
       <hr />
-      {selectedPost && <PostDetail post={selectedPost} />}
+      {selectedPost && (
+        <PostDetail post={selectedPost} deleteMutation={deleteMutation} />
+      )}
     </>
   );
 }
