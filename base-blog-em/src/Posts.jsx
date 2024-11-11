@@ -21,14 +21,14 @@ export function Posts() {
     }
   }, [currentPage, queryClient]);
 
-  const { data, isError, error, isLoading } = useQuery({
+  const { data, isError, error, isFetching } = useQuery({
     queryKey: ['posts', currentPage],
     queryFn: () => fetchPosts(currentPage),
     staleTime: 2000,
   });
 
-  if (isLoading) {
-    return <h3>Loading...</h3>;
+  if (isFetching) {
+    return <h3>Fetching posts...</h3>;
   }
 
   if (isError) {
