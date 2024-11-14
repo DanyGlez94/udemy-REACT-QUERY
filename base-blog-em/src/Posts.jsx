@@ -15,6 +15,10 @@ export function Posts() {
     mutationFn: (postId) => deletePost(postId),
   });
 
+  const updateMutation = useMutation({
+    mutationFn: (postId) => updatePost(postId),
+  });
+
   // deleteMutation.delete
 
   useEffect(() => {
@@ -55,7 +59,8 @@ export function Posts() {
             className="post-title"
             onClick={() => {
               deleteMutation.reset();
-              setSelectedPost(post)
+              updateMutation.reset();
+              setSelectedPost(post);
             }}
           >
             {post.title}
@@ -83,7 +88,11 @@ export function Posts() {
       </div>
       <hr />
       {selectedPost && (
-        <PostDetail post={selectedPost} deleteMutation={deleteMutation} />
+        <PostDetail
+          post={selectedPost}
+          deleteMutation={deleteMutation}
+          updateMutation={updateMutation}
+        />
       )}
     </>
   );
